@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build a Drum Machine (React)</title>
+    <link rel="shortcut icon" href="#" />
+
+    <!-- REACT -->
+    <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+
+    <style>
+        body {
+            margin-top: 100px;
+            font-family: 'Roboto Mono', monospace;
+            background-color: #2d3436;
+        }
+
+        button {
+            min-width: 100px;
+            min-height: 100px;
+            border: 4px solid #636e72;
+            background-color: #b2bec3;
+        }
+
+        .container {
+            margin: auto;
+            padding: 20px;
+            width: 350px;
+            text-align: center;
+            border: 4px solid #636e72;
+        }
+
+        .display {
+            border: 4px solid #636e72;
+            background-color: #b2bec3;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding-top: 3px;
+            height: 25px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+
+    <div id="root"></div>
+
+</body>
+
+</html>
+
+<script type="text/babel">
+
+    const obj = {
+        "q": "Heater-1.mp3",
+        "w": "Heater-2.mp3",
+        "e": "Heater-3.mp3",
+
+        "a": "Heater-4_1.mp3",
+        "s": "Heater-6.mp3",
+        "d": "Dsc_Oh.mp3",
+
+        "z": "Kick_n_Hat.mp3",
+        "x": "RP4_KICK_1.mp3",
+        "c": "Cev_H2.mp3",
+    };
+
+    const info = [{ letter: 'Q', url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3' },
+    { letter: 'W', url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-2.mp3' },
+    { letter: 'E', url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-3.mp3' },
+    { letter: 'A', url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-4_1.mp3' },
+    { letter: 'S', url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-6.mp3' },
+    { letter: 'D', url: 'https://s3.amazonaws.com/freecodecamp/drums/Dsc_Oh.mp3' },
+    { letter: 'Z', url: 'https://s3.amazonaws.com/freecodecamp/drums/Kick_n_Hat.mp3' },
+    { letter: 'X', url: 'https://s3.amazonaws.com/freecodecamp/drums/RP4_KICK_1.mp3' },
+    { letter: 'C', url: 'https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3' }];
+
+    class Drumpad extends React.Component {
+        constructor(props) {
+            super(props);
+        }
+
+        render() {
+            return (
+
+                //<button onClick={() => document.getElementById(this.props.id).play()} className='drum-pad' id={'pad'+this.props.id}><audio className='clip' id={this.props.id} src={this.props.src}></audio>{this.props.id}</button>
+
+                <button className='drum-pad' id={'pad' + this.props.id}><audio className='clip' id={this.props.id} src={this.props.src}></audio>{this.props.id}</button>
+
+            )
+        }
+
+    }
+
+    class App extends React.Component {
+        constructor(props) {
+            super(props);
+        }
+
+
+
+        componentDidMount() {
+            document.addEventListener("keydown", this.handleKeyPress);
+            document.addEventListener("click", this.handleClick);
+
+        }
+        componentWillUnmount() {
+            document.removeEventListener("keydown", this.handleKeyPress);
+            document.removeEventListener("click", this.handleKeyPress);
+        }
+
+        handleKeyPress(event) {
+
+            var a = event.keyCode;
+        
+            if (a == '81' || a == '87' || a == '69' || a == '65' || a == '83' || a == '68' || a == '90' || a == '88' || a == '67') {
+                //play sound
+                var sample = document.getElementById(event.key.toUpperCase());
+                sample.play();
+                //update display
+                ReactDOM.render(obj[event.key], document.getElementById('display'));
+            }
+
+
+        }
+
+        handleClick(event) {
+
+            var b = event.target.id[3];
+
+            if (b == 'Q' || b == 'W' || b == 'E' || b == 'A' || b == 'S' || b == 'D' || b == 'Z' || b == 'X' || b == 'C') {
+                //play sound
+                var sample = document.getElementById(event.target.id[3]);
+                sample.play();
+                //update display
+                ReactDOM.render(obj[event.target.id[3].toLowerCase()], document.getElementById('display'));
+            }
+
+        }
+
+
+        render() {
+            return (
+                <div>
+                    <div className="container" id="drum-machine">
+
+                        <div className="display"><strong>FCC DRUM-MACHINE</strong> React</div>
+
+                        {/*
+                        Warning: Each child in a list should have a unique "key" prop
+                        Solution:
+                        When creating a list in the UI from an array with JSX, you should add a key prop to each child and to any of its’ children.
+                        React uses the key prop create a relationship between the component and the DOM element. The library uses this relationship to determine whether or not the component should be re-rendered.
+                        It is not recommended to use the index of the array as the key prop if you know the array will not be static. If the key is an index, reordering an item in the array changes it. Then React will get confused and re-render the incorrect element.
+                        Keys do not have to be unique globally. They just need to be unique across sibling elements.
+                         */}
+
+                        {info.map((data, i) => (
+                            <Drumpad id={data.letter} src={data.url} key={i} />
+                        ))}
+
+                        <div className="display" id="display"></div>
+
+                    </div>
+                </div>
+            );
+        }
+    }
+
+
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+
+</script>
